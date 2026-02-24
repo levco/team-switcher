@@ -25,7 +25,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-import { demoTeamUsers } from "@/components/app-sidebar"
+import { demoTeamUsers } from "@/components/app-sidebar-simple"
 
 export type Team = {
   name: string

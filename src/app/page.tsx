@@ -1,8 +1,10 @@
 "use client"
 
 import { useTeam } from "@/contexts/team-context"
+import { useActiveUser } from "@/contexts/active-user-context"
 import Image from "next/image"
 import { Building2, Landmark, GalleryVerticalEnd, AudioWaveform, Command, Briefcase } from "lucide-react"
+import { getAccountIcon, getAccountColor } from "@/lib/demo-data"
 import avatar1 from "@/components/avatars/avatar_1.png"
 import avatar2 from "@/components/avatars/avatar_2.png"
 import avatar3 from "@/components/avatars/avatar_3.png"
@@ -573,13 +575,15 @@ function NorthmarqUseCase() {
 
 // BWE Design Option 1 - Profile Switcher
 function BWEDesignOption1() {
+  const { organization } = useActiveUser()
+  
   return (
     <>
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-2">
           <span className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Organization</span>
-          <h1 className="text-2xl font-semibold">BWE</h1>
+          <h1 className="text-2xl font-semibold">{organization.name}</h1>
         </div>
         <div className="flex gap-2">
           <span className="inline-flex h-6 items-center gap-1.5 rounded-full border px-3 text-xs font-medium">
@@ -597,53 +601,40 @@ function BWEDesignOption1() {
       <div>
         <span className="mb-4 block font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Accounts</span>
         <div className="grid gap-3 md:grid-cols-2">
-          {/* BWE Brokerage Account */}
-          <div className="rounded-lg border bg-card">
-            <div className="flex items-center gap-3 p-2">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#3E9B70]/20">
-                <Briefcase className="h-4 w-4 text-[#3E9B70]" />
-              </div>
-              <div className="flex flex-1 flex-col gap-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold">BWE Brokerage</span>
-                  <span className="font-mono text-xs rounded-md border bg-muted px-1.5 py-0.5">
-                    10547
-                  </span>
-                  <span className="inline-flex h-5 items-center gap-1.5 rounded-full border px-2 text-xs font-medium">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#3E9B70]" />
-                    Broker
-                  </span>
+          {organization.accounts.map((account) => {
+            const AccountIcon = getAccountIcon(account.type)
+            const accountColor = getAccountColor(account.type)
+            const types = Array.isArray(account.type) ? account.type : [account.type]
+            
+            return (
+              <div key={account.id} className="rounded-lg border bg-card">
+                <div className="flex items-center gap-3 p-2">
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${accountColor}/20`}>
+                    <AccountIcon className={`h-4 w-4 ${accountColor.replace('bg-', 'text-')}`} />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold">{account.name}</span>
+                      {account.accountNumber && (
+                        <span className="font-mono text-xs rounded-md border bg-muted px-1.5 py-0.5">
+                          {account.accountNumber}
+                        </span>
+                      )}
+                      {types.map((type) => (
+                        <span key={type} className="inline-flex h-5 items-center gap-1.5 rounded-full border px-2 text-xs font-medium">
+                          <span className={`h-1.5 w-1.5 rounded-full ${type === 'broker' ? 'bg-[#3E9B70]' : 'bg-[#3880E8]'}`} />
+                          {type === 'broker' ? 'Broker' : 'Lender'}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {account.description}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-xs text-muted-foreground">
-                  Primary brokerage account for running outreach campaigns and managing placements to external lenders.
-                </span>
               </div>
-            </div>
-          </div>
-
-          {/* BWE Lending Account */}
-          <div className="rounded-lg border bg-card">
-            <div className="flex items-center gap-3 p-2">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#3880E8]/20">
-                <Landmark className="h-4 w-4 text-[#3880E8]" />
-              </div>
-              <div className="flex flex-1 flex-col gap-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold">BWE Lending</span>
-                  <span className="font-mono text-xs rounded-md border bg-muted px-1.5 py-0.5">
-                    4381
-                  </span>
-                  <span className="inline-flex h-5 items-center gap-1.5 rounded-full border px-2 text-xs font-medium">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#3880E8]" />
-                    Lender
-                  </span>
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  Receives inbound placements from other brokers when BWE provides direct financing for deals.
-                </span>
-              </div>
-            </div>
-          </div>
+            )
+          })}
         </div>
       </div>
 
@@ -670,31 +661,32 @@ function BWEDesignOption1() {
             <div className="border-t" />
             <div className="bg-background p-2">
               <p className="text-xs leading-relaxed text-muted-foreground">
-                User across both accounts. Uses mode switcher in sidebar footer to toggle between Broker Mode (BWE Brokerage features) and Lender Mode (BWE Lending features).
+                {organization.accounts.length > 1 
+                  ? "User across both accounts. Uses mode switcher in sidebar footer to toggle between Broker Mode (BWE Brokerage features) and Lender Mode (BWE Lending features)."
+                  : "User with access to both broker and lender features through a single hybrid account. Uses mode switcher to toggle between Broker Mode and Lender Mode within the same account."}
               </p>
             </div>
             <div className="border-t" />
-            <div className="flex items-center justify-between bg-muted/50 px-2 py-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-normal text-muted-foreground">User Profile</span>
-                <span className="inline-flex h-5 items-center gap-1.5 rounded-full border px-2 text-xs font-medium">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#3E9B70]" />
-                  Broker
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground">BWE Brokerage</span>
-            </div>
-            <div className="border-t" />
-            <div className="flex items-center justify-between bg-muted/50 px-2 py-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-normal text-muted-foreground">User Profile</span>
-                <span className="inline-flex h-5 items-center gap-1.5 rounded-full border px-2 text-xs font-medium">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#3880E8]" />
-                  Lender
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground">BWE Lending</span>
-            </div>
+            {organization.accounts.map((account) => {
+              const accountColor = getAccountColor(account.type)
+              const types = Array.isArray(account.type) ? account.type : [account.type]
+              
+              return types.map((type) => (
+                <div key={`${account.id}-${type}`}>
+                  <div className="flex items-center justify-between bg-muted/50 px-2 py-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-normal text-muted-foreground">User Profile</span>
+                      <span className="inline-flex h-5 items-center gap-1.5 rounded-full border px-2 text-xs font-medium">
+                        <span className={`h-1.5 w-1.5 rounded-full ${type === 'broker' ? 'bg-[#3E9B70]' : 'bg-[#3880E8]'}`} />
+                        {type === 'broker' ? 'Broker' : 'Lender'}
+                      </span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{account.name}</span>
+                  </div>
+                  {types.length > 1 && type !== types[types.length - 1] && <div className="border-t" />}
+                </div>
+              ))
+            })}
           </div>
         </div>
       </div>
@@ -708,21 +700,44 @@ function BWEDesignOption1() {
             <p>
               BWE is an Enterprise customer that operates as both a lender and a broker. Very often they have deals sent to them, the deal doesn't fit their bucket, and they then try to broker it out to other lenders. Graham Gilreath's email (graham.gilreath@bwe.com) was already in Lev as a lender contact when BWE began evaluating the platform for brokerage services.
             </p>
-            <p>
-              To handle this, we create a 2nd account for BWE's Brokerage division, and Graham belongs to both accounts via separate User Profiles. This allows Graham to work on brokered deals—running outreach campaigns and managing placements to external lenders—while also receiving and evaluating inbound placements when other brokers send deals to BWE for direct financing.
-            </p>
-            <p>
-              <strong>How Profile Switcher works:</strong> Graham uses the mode switcher in the sidebar footer to toggle between Broker Mode and Lender Mode. This switches which account he's operating under—all the data changes.
-            </p>
-            <p>
-              <strong>In Broker Mode (BWE Brokerage account):</strong> Sidebar shows Create Deal, Deals, Network, Market, Files, and Vaults. ALL data shown is from the BWE Brokerage account only—his broker deals, broker network contacts, broker files, broker market data, vaults shared with the brokerage account.
-            </p>
-            <p>
-              <strong>In Lender Mode (BWE Lending account):</strong> Sidebar shows only Vaults. ALL data shown is from the BWE Lending account only—vaults shared with the lending account. Broker features (Deals, Network, Market, Files, Create Deal) are completely hidden. Network is not yet available for lenders in this simplified implementation.
-            </p>
-            <p>
-              <strong>Key limitation:</strong> Graham can't see data from both accounts simultaneously. When he's in Broker Mode looking at his broker deals, he can't see his lender network contacts at the same time. He must switch modes to view different account data. This is the simplest implementation but requires manual mode switching to move between account contexts.
-            </p>
+            
+            {organization.accounts.length > 1 ? (
+              <>
+                <p>
+                  <strong>Multiple Accounts Model:</strong> We create a 2nd account for BWE's Brokerage division, and Graham belongs to both accounts via separate User Profiles. This allows Graham to work on brokered deals—running outreach campaigns and managing placements to external lenders—while also receiving and evaluating inbound placements when other brokers send deals to BWE for direct financing.
+                </p>
+                <p>
+                  <strong>How Profile Switcher works:</strong> Graham uses the mode switcher in the sidebar footer to toggle between Broker Mode and Lender Mode. This switches which account he's operating under—all the data changes.
+                </p>
+                <p>
+                  <strong>In Broker Mode (BWE Brokerage account):</strong> Sidebar shows Create Deal, Deals, Network, Market, Files, and Vaults. ALL data shown is from the BWE Brokerage account only—his broker deals, broker network contacts, broker files, broker market data, vaults shared with the brokerage account.
+                </p>
+                <p>
+                  <strong>In Lender Mode (BWE Lending account):</strong> Sidebar shows only Vaults and Lending Profile. ALL data shown is from the BWE Lending account only—vaults shared with the lending account. Broker features (Deals, Network, Market, Files, Create Deal) are completely hidden.
+                </p>
+                <p>
+                  <strong>Key limitation:</strong> Graham can't see data from both accounts simultaneously. When he's in Broker Mode looking at his broker deals, he can't see his lender network contacts at the same time. He must switch modes to view different account data. This is the simplest implementation but requires manual mode switching to move between account contexts.
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  <strong>One Account Model:</strong> We create a single account (BWE Unified) with multiple types (both Broker and Lender). Graham belongs to this one account with access to both roles. This allows Graham to work on brokered deals and handle lender operations all within the same account context.
+                </p>
+                <p>
+                  <strong>How Profile Switcher works:</strong> Graham uses the mode switcher in the sidebar footer to toggle between Broker Mode and Lender Mode, but the underlying account doesn't change—only the visible features change.
+                </p>
+                <p>
+                  <strong>In Broker Mode:</strong> Sidebar shows Create Deal, Deals, Network, Market, Files, and Vaults. All data shown is from the BWE Unified account filtered to broker-specific features.
+                </p>
+                <p>
+                  <strong>In Lender Mode:</strong> Sidebar shows only Vaults and Lending Profile. All data shown is from the same BWE Unified account but filtered to lender-specific features.
+                </p>
+                <p>
+                  <strong>Key difference:</strong> Since the account has multiple types, there's no "Lending Details" section in the settings. The account serves both purposes, so lending configuration would be handled differently rather than per-account level. This model is simpler from an account management perspective but less granular for role-specific settings.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
