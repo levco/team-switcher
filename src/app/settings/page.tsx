@@ -478,7 +478,7 @@ export default function SettingsPage() {
       const account = organization.accounts.find(a => a.id === accountId)
       if (!account) return null
 
-      const creditsBalance = 1240
+      const creditsBalance: number = 1240
       const creditsLow = creditsBalance < 300
       const creditsEmpty = creditsBalance === 0
 
