@@ -46,6 +46,7 @@ export interface DemoScenario {
   organization: Organization
   user: User
   teamMembers: User[]
+  description: string
 }
 
 // Palette: deterministic per-account color + icon
@@ -125,6 +126,7 @@ export const convoyScenario: DemoScenario = {
   organization: convoyOrg,
   user: frankiePaparella,
   teamMembers: [frankiePaparella],
+  description: "A user at one of our traditional customer accounts. Convoy is what we'd consider a \"Broker Customer that's also a Lender\" — one of the complicated enterprise cases with multiple accounts, each with their own members, siloed deals, network, and their own subscription. In this new world, being a member of any active subscription means they could create deals as a Broker, as a Borrower, and soon as a Lender if they wanted to. Frankie can create deals in both accounts, getting charged for usage based on the account he's actively in. He can view any Vault shared with him as a Lender Contact, a Broker, or a Borrower — it's just Vaults that have been shared with Frankie's email.",
 }
 
 // ─── Custom Capital ───────────────────────────────────────────────────────────
@@ -165,6 +167,7 @@ export const customScenario: DemoScenario = {
   organization: customOrg,
   user: alexMorgan,
   teamMembers: [alexMorgan],
+  description: "Traditional customer setup. Whether they're a broker customer or borrower customer, they're now just a customer. 1 account, where the Org & Account are 1:1. They can create deals and manage their network as a broker, borrower, or whatever they want. If they needed multiple accounts they could add them. If they needed a Lender Profile, they could add it.",
 }
 
 // ─── Scenario registry ────────────────────────────────────────────────────────
@@ -196,6 +199,7 @@ export const steveScenario: DemoScenario = {
   organization: noOrg,
   user: steveUser,
   teamMembers: [steveUser],
+  description: "What we're calling a guest. Only super relevant right now because we haven't built an onboarding flow. There are entry points to users creating an account from something like the Trust Center, but there's no step to prompt them to create an Org and Account — so there's no way for them to have a subscription or anything. As soon as they want to become a customer, someone would make them an account, which creates the Org. In a future state, we hope to push everyone through an Account-Creation Onboarding Flow.",
 }
 
 // ─── Pathfinder Bank ──────────────────────────────────────────────────────────
@@ -236,6 +240,7 @@ export const pathfinderScenario: DemoScenario = {
   organization: pathfinderOrg,
   user: alisonHa,
   teamMembers: [alisonHa],
+  description: "A Lender Contact — the example of a CRM Contact's experience. They are tied to an org, and we can decide if we're going to create accounts for them and how it will work, although that may add complexity (should all JP Morgan employees share a master account?). If we go the no-account route, they are essentially a guest. We can show them Vaults, and we could show Lender Programs via the Org their user is tied to via Person. But they would need an Account and then a Subscription to access everything.",
 }
 
 export const SCENARIOS: Record<string, DemoScenario> = {

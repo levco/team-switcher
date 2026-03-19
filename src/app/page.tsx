@@ -1,9 +1,10 @@
 "use client"
 
 import { useActiveUser } from "@/contexts/active-user-context"
+import { useTeam } from "@/contexts/team-context"
 import Image from "next/image"
 import { Landmark } from "lucide-react"
-import { getAccountPalette, getAccountsByUser } from "@/lib/demo-data"
+import { getAccountPalette, getAccountsByUser, SCENARIOS } from "@/lib/demo-data"
 
 export default function DashboardPage() {
   return (
@@ -15,9 +16,18 @@ export default function DashboardPage() {
 
 function UseCaseView() {
   const { organization, teamMembers } = useActiveUser()
+  const { activeTeam } = useTeam()
+
+  const scenario = SCENARIOS[activeTeam?.name ?? '']
 
   return (
     <>
+      {/* USE CASE DESCRIPTION */}
+      {scenario?.description && (
+        <div className="rounded-lg border border-dashed bg-muted/30 px-4 py-3">
+          <p className="text-sm text-muted-foreground leading-relaxed">{scenario.description}</p>
+        </div>
+      )}
       {/* ORGANIZATION */}
       <div>
         <span className="mb-3 block font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Organization</span>
