@@ -280,7 +280,7 @@ export const tdBankScenario: DemoScenario = {
   user: johnStroligo,
   teamMembers: [johnStroligo],
   title: "A Lender Contact at a large bank — org exists, but no account has been created",
-  description: "John is a Regional Vice President at TD Bank. He exists in Lev because Jake added TD Bank to the Lender Universe and John as a contact. He has an org (TD Bank) with Lender Programs, but no Account has ever been created for him — so he has no subscription, no access to platform features, and no account-scoped anything. This is the purest version of the 'no-account' question: the org exists, lender programs are visible, but without an Account there's no home for Deals, Network, or Files.",
+  description: "John is a Regional Vice President at TD Bank. He exists in Lev because Jake added TD Bank to the Lender Universe and John as a person. The org (TD Bank) that Jake linked him to has Lender Programs, but no Account has ever been created for him — so he has no subscription, no access to platform features, and no account-scoped anything. This is the purest version of the 'no-account' question: the org exists, lender programs are visible, but without an Account there's no home for Deals, Network, or Files.",
 }
 
 export const SCENARIOS: Record<string, DemoScenario> = {

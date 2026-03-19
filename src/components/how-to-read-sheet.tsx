@@ -16,9 +16,9 @@ export function HowToReadSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon-sm">
+        <Button variant="ghost" size="sm">
           <InfoIcon className="h-4 w-4" />
-          <span className="sr-only">How to read this</span>
+          How it all works
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-full sm:max-w-md p-0">
