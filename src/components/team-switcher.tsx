@@ -10,7 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/sidebar"
 
 import { demoTeamUsers } from "@/components/app-sidebar-simple"
+import { SCENARIOS } from "@/lib/demo-data"
 
 export type Team = {
   name: string
@@ -83,35 +83,35 @@ export function TeamSwitcher({
               side={isMobile ? "bottom" : "right"}
               sideOffset={4}
             >
-              {teams.map((team, index) => {
+              {teams.map((team) => {
                 const teamUserList = demoTeamUsers[team.name] || []
                 const singleUser = teamUserList[0]
+                const orgName = SCENARIOS[team.name]?.organization.name
+                const orgLabel = !orgName || orgName === '—' ? 'Guest' : orgName
                 return (
-                  <React.Fragment key={team.name}>
-                    {index > 0 && <DropdownMenuSeparator />}
-                    <DropdownMenuItem
-                      onClick={() => {
-                        onTeamChange(team)
-                        if (singleUser) setActiveUserId(singleUser.id)
-                      }}
-                      className="gap-2 p-2"
-                    >
-                      <div className="h-6 w-6 shrink-0 overflow-hidden rounded-full">
-                        {singleUser?.avatar ? (
-                          <Image src={singleUser.avatar} alt={singleUser.name} width={24} height={24} className="h-full w-full object-cover" />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center rounded-full bg-muted text-xs font-semibold">
-                            {team.name.charAt(0)}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex flex-1 flex-col">
-                        <span className="text-sm font-medium">{singleUser?.name ?? team.name}</span>
-                        <span className="text-xs text-muted-foreground">{singleUser?.email ?? ''}</span>
-                      </div>
-                      {activeTeam.name === team.name && <span className="ml-auto text-xs">✓</span>}
-                    </DropdownMenuItem>
-                  </React.Fragment>
+                  <DropdownMenuItem
+                    key={team.name}
+                    onClick={() => {
+                      onTeamChange(team)
+                      if (singleUser) setActiveUserId(singleUser.id)
+                    }}
+                    className="gap-2 p-2"
+                  >
+                    <div className="h-6 w-6 shrink-0 overflow-hidden rounded-full">
+                      {singleUser?.avatar ? (
+                        <Image src={singleUser.avatar} alt={singleUser.name} width={24} height={24} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-muted text-xs font-semibold">
+                          {team.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-1 flex-col">
+                      <span className="text-sm font-medium">{singleUser?.name ?? team.name}</span>
+                      <span className="text-xs text-muted-foreground">{orgLabel}</span>
+                    </div>
+                    {activeTeam.name === team.name && <span className="ml-auto text-xs">✓</span>}
+                  </DropdownMenuItem>
                 )
               })}
             </DropdownMenuContent>

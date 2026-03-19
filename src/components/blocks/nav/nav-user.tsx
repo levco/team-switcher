@@ -134,9 +134,6 @@ export function NavUser({
             {availableAccounts && availableAccounts.length > 1 && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-xs text-muted-foreground">
-                  Accounts
-                </DropdownMenuLabel>
                 <DropdownMenuGroup>
                   {availableAccounts.map((account) => {
                     const palette = getAccountPalette(account.id)

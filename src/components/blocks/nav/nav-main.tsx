@@ -153,6 +153,23 @@ export function NavMain({
                     </TooltipContent>
                   </Tooltip>
                 </SidebarMenuItem>
+              ) : item.tooltip ? (
+                // Active with item-level tooltip (always shown, no showAccessTooltips required)
+                <SidebarMenuItem key={item.title}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild isActive={item.isActive}>
+                        <LinkComponent href={item.url}>
+                          {item.icon && <item.icon />}
+                          <span>{item.title}</span>
+                        </LinkComponent>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      {item.tooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
               ) : (
                 // Active, no tooltip
                 <SidebarMenuItem key={item.title}>

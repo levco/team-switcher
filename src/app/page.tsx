@@ -3,7 +3,7 @@
 import { useActiveUser } from "@/contexts/active-user-context"
 import { useTeam } from "@/contexts/team-context"
 import Image from "next/image"
-import { Landmark } from "lucide-react"
+import { Landmark, BookOpen } from "lucide-react"
 import { getAccountPalette, getAccountsByUser, SCENARIOS } from "@/lib/demo-data"
 
 export default function DashboardPage() {
@@ -22,12 +22,14 @@ function UseCaseView() {
 
   return (
     <>
-      {/* USE CASE DESCRIPTION */}
-      {scenario?.description && (
-        <div className="rounded-lg border border-dashed bg-muted/30 px-4 py-3">
-          <p className="text-sm text-muted-foreground leading-relaxed">{scenario.description}</p>
+      {/* USE CASE TITLE */}
+      {scenario?.title && (
+        <div className="flex items-center gap-1.5 text-sm font-light">
+          <BookOpen className="h-4 w-4 shrink-0" />
+          <span className="font-medium">The Use Case: </span>{scenario.title}
         </div>
       )}
+
       {/* ORGANIZATION */}
       <div>
         <span className="mb-3 block font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Organization</span>
@@ -159,6 +161,13 @@ function UseCaseView() {
           })}
         </div>
       </div>
+
+      {/* USE CASE DESCRIPTION */}
+      {scenario?.description && (
+        <div className="rounded-lg border border-dashed bg-muted/30 px-4 py-3">
+          <p className="text-sm text-muted-foreground leading-relaxed">{scenario.description}</p>
+        </div>
+      )}
     </>
   )
 }
