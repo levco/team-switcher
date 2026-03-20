@@ -59,7 +59,7 @@ export function AppSidebar() {
   const { user, organization, activeAccount, setActiveAccountId } = useActiveUser()
 
   const userAccounts = getAccountsByUser(user, organization)
-  const hasSubscription = activeAccount?.subscription ?? false
+  const hasSubscription = activeAccount?.legacySubscription ?? false
 
   const platformItems = [
     { title: "Deals", url: "/deals", icon: FileText },

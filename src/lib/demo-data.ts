@@ -14,7 +14,8 @@ export interface Account {
   description: string
   location: string
   about: string
-  subscription: boolean
+  legacySubscription: boolean
+  creditsFree100: boolean
 }
 
 export interface Organization {
@@ -97,7 +98,8 @@ const convoyOrg: Organization = {
       description: 'Primary brokerage account running outreach campaigns and managing deal placements.',
       location: '3344 Peachtree Road NE, Atlanta, GA 30326',
       about: 'Convoy Capital Brokerage handles commercial real estate debt placement across the Southeast.',
-      subscription: true,
+      legacySubscription: true,
+      creditsFree100: true,
     },
     {
       id: 'convoy-nyc',
@@ -107,7 +109,8 @@ const convoyOrg: Organization = {
       description: 'Direct lending arm providing financing for deals that fit internal credit criteria.',
       location: '3344 Peachtree Road NE, Atlanta, GA 30326',
       about: 'Convoy Capital Lending evaluates and directly underwrites commercial real estate transactions.',
-      subscription: true,
+      legacySubscription: true,
+      creditsFree100: true,
     },
   ],
 }
@@ -149,7 +152,8 @@ const customOrg: Organization = {
       description: 'Single-account brokerage focused on mid-market commercial real estate transactions.',
       location: '200 Park Avenue, New York, NY 10166',
       about: 'Custom Capital is a boutique commercial real estate brokerage operating in the Northeast.',
-      subscription: true,
+      legacySubscription: true,
+      creditsFree100: true,
     },
   ],
 }
@@ -207,7 +211,7 @@ export const steveScenario: DemoScenario = {
 }
 
 // ─── Pathfinder Bank ──────────────────────────────────────────────────────────
-// Has lender programs, 1 account with subscription: false
+// Has lender programs, 1 account with legacySubscription: false
 
 const pathfinderOrg: Organization = {
   id: 'pathfinder',
@@ -224,7 +228,8 @@ const pathfinderOrg: Organization = {
       description: 'Commercial lending division managing inbound deal flow from brokers.',
       location: '100 Federal Street, Boston, MA 02110',
       about: 'Pathfinder Bank is a regional commercial real estate lender focused on the Northeast market.',
-      subscription: false,
+      legacySubscription: false,
+      creditsFree100: false,
     },
   ],
 }

@@ -32,15 +32,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { Folder, Network, Globe, FileText, Vault, Building2, Landmark } from "lucide-react"
+import { Folder, Network, Globe, FileText, Vault, Building2, Landmark, Sparkles } from "lucide-react"
 import { SCENARIOS, getAccountsByUser, getAccountPalette } from "@/lib/demo-data"
-
-const platformNavItems = [
-  { title: "Deals", url: "/deals", icon: FileText },
-  { title: "Network", url: "/network", icon: Network },
-  { title: "Market", url: "/market", icon: Globe },
-  { title: "Files", url: "/files", icon: Folder },
-]
 
 const sharedItems = [
   {
@@ -214,7 +207,22 @@ export function AppSidebar() {
   const { activeTeam, setActiveTeam } = useTeam()
 
   const userAccounts = getAccountsByUser(user, organization)
-  const hasSubscription = activeAccount?.subscription ?? false
+  const hasLegacySubscription = activeAccount?.legacySubscription ?? false
+  const hasCredits = activeAccount?.creditsFree100 ?? false
+
+  const platformItems = [
+    { title: "Deals", url: "/deals", icon: FileText },
+    { title: "Network", url: "/network", icon: Network },
+    { title: "Market", url: "/market", icon: Globe },
+    { title: "Files", url: "/files", icon: Folder },
+    {
+      title: "Originate",
+      url: "/originate",
+      icon: Sparkles,
+      disabled: !hasCredits,
+      tooltip: "Eligible to anyone with an account, which anyone can make. Creating an account instantly grants you 100 credits on a free subscription.",
+    },
+  ]
 
   return (
     <Sidebar variant="inset">
@@ -223,11 +231,11 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <NavMain
-          items={platformNavItems}
+          items={platformItems}
           label="Platform"
           linkComponent={Link}
-          disabled={!hasSubscription}
-          showAccessTooltips={hasSubscription}
+          disabled={!hasLegacySubscription}
+          showAccessTooltips={hasLegacySubscription || hasCredits}
         />
         <NavMain items={sharedItems} label="Shared with Me" linkComponent={Link} />
         {organization.hasLenderPrograms && <LenderProgramsNavItem />}

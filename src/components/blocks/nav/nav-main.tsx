@@ -33,8 +33,8 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
-const ACTIVE_TOOLTIP = "Available to anyone with a subscription, with zero role logic. Everything is scoped to the account- i.e. that account's Deals, Network, Files. Specifying your role on a Deal is at the Deal level. "
-const DISABLED_TOOLTIP = "Blocked by Paywall for anyone who does not have a membership to an account with an active subscription."
+const ACTIVE_TOOLTIP = "Available to anyone with a legacy subscription, with zero role logic. Everything is scoped to the account — i.e. that account's Deals, Network, Files. Specifying your role on a Deal is at the Deal level."
+const DISABLED_TOOLTIP = "Blocked by Paywall — requires membership to an account with a legacy subscription (legacy_subscription: true)."
 
 export interface NavMainProps {
   items: {
@@ -44,6 +44,8 @@ export interface NavMainProps {
     isActive?: boolean
     roles?: string[]
     tooltip?: string
+    /** Per-item disabled override. When set, takes precedence over the group-level disabled prop. */
+    disabled?: boolean
     items?: { title: string; url: string; isActive?: boolean }[]
   }[]
   /** Optional group label rendered above the nav items */
@@ -85,8 +87,9 @@ export function NavMain({
             </SidebarMenu>
           )}
           <SidebarMenu>
-            {items.map((item) =>
-              item.items?.length ? (
+            {items.map((item) => {
+              const itemDisabled = item.disabled !== undefined ? item.disabled : disabled
+              return item.items?.length ? (
                 <Collapsible
                   key={item.title}
                   asChild
@@ -116,7 +119,7 @@ export function NavMain({
                     </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
-              ) : disabled ? (
+              ) : itemDisabled ? (
                 // Disabled: tooltip + click opens upgrade dialog
                 <SidebarMenuItem key={item.title}>
                   <Tooltip>
@@ -132,7 +135,7 @@ export function NavMain({
                       </SidebarMenuButton>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-xs">
-                      {DISABLED_TOOLTIP}
+                      {item.tooltip ?? DISABLED_TOOLTIP}
                     </TooltipContent>
                   </Tooltip>
                 </SidebarMenuItem>
@@ -181,7 +184,7 @@ export function NavMain({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )
-            )}
+            })}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -196,7 +199,7 @@ export function NavMain({
               <DialogTitle>Upgrade to Lev Pro</DialogTitle>
             </div>
             <DialogDescription>
-              This feature requires an active subscription. Upgrade to unlock Deals, Network, Market, Files, and more.
+              This feature requires a legacy subscription. Upgrade to unlock Deals, Network, Market, Files, and more.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 pt-2">

@@ -19,6 +19,7 @@ type ActiveUserContextType = {
   activeAccountId: string
   setActiveAccountId: (id: string) => void
   activeAccount: Account | undefined
+  createAccount: (name: string) => Account
 }
 
 const ActiveUserContext = React.createContext<ActiveUserContextType | null>(null)
@@ -33,25 +34,54 @@ export function ActiveUserProvider({ children }: { children: React.ReactNode }) 
 
   const [activeUserId, setActiveUserId] = React.useState(user.id)
   const [activeAccountId, setActiveAccountId] = React.useState(user.accountMemberships[0] ?? "")
+  const [createdAccounts, setCreatedAccounts] = React.useState<Account[]>([])
 
   React.useEffect(() => {
     setActiveUserId(user.id)
     setActiveAccountId(user.accountMemberships[0] ?? "")
+    setCreatedAccounts([])
   }, [user.id])
 
-  const userAccounts = getAccountsByUser(user, organization)
+  const effectiveOrganization = React.useMemo<Organization>(() => ({
+    ...organization,
+    accounts: [...organization.accounts, ...createdAccounts],
+  }), [organization, createdAccounts])
+
+  const effectiveUser = React.useMemo<User>(() => ({
+    ...user,
+    accountMemberships: [...user.accountMemberships, ...createdAccounts.map(a => a.id)],
+  }), [user, createdAccounts])
+
+  const userAccounts = getAccountsByUser(effectiveUser, effectiveOrganization)
   const activeAccount = userAccounts.find(a => a.id === activeAccountId) ?? userAccounts[0]
+
+  function createAccount(name: string): Account {
+    const newAccount: Account = {
+      id: `created-${Date.now()}`,
+      name,
+      members: 1,
+      description: 'Newly created account.',
+      location: '',
+      about: '',
+      legacySubscription: false,
+      creditsFree100: true,
+    }
+    setCreatedAccounts(prev => [...prev, newAccount])
+    setActiveAccountId(newAccount.id)
+    return newAccount
+  }
 
   return (
     <ActiveUserContext.Provider value={{
-      user,
-      organization,
+      user: effectiveUser,
+      organization: effectiveOrganization,
       teamMembers,
       activeUserId,
       setActiveUserId,
       activeAccountId: activeAccount?.id ?? "",
       setActiveAccountId,
       activeAccount,
+      createAccount,
     }}>
       {children}
     </ActiveUserContext.Provider>
